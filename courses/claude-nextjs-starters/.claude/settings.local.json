@@ -8,7 +8,12 @@
       "Bash(curl -s http://localhost:3000)",
       "Bash(kill 23500)",
       "Bash(pkill -f \"next dev\")",
-      "Bash(grep -E '\\\\.\\(md|json\\)$')"
+      "Bash(grep -E '\\\\.\\(md|json\\)$')",
+      "mcp__playwright"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }
