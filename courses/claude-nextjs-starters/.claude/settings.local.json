@@ -9,7 +9,8 @@
       "Bash(kill 23500)",
       "Bash(pkill -f \"next dev\")",
       "Bash(grep -E '\\\\.\\(md|json\\)$')",
-      "mcp__playwright"
+      "mcp__playwright",
+      "Skill(update-config)"
     ]
   },
   "enableAllProjectMcpServers": true,
