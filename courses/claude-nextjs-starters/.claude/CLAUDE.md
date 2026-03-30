@@ -136,27 +136,92 @@ export function Form() {
 }
 ```
 
-## 자주 사용하는 명령어
+## 개발 워크플로우
+
+### 기본 명령어
 
 ```bash
-# 개발 서버 (Turbopack 기본)
+# 개발 서버 시작 (Turbopack 기본, localhost:3000)
 npm run dev
 
 # 프로덕션 빌드
 npm run build
 
-# 빌드 결과 실행
+# 빌드 결과물 실행
 npm run start
 
-# ESLint 검사
+# 코드 린트 검사 (ESLint)
 npm run lint
+```
 
-# shadcn 컴포넌트 추가
+### shadcn/ui 컴포넌트 관리
+
+```bash
+# 새 컴포넌트 추가 (components/ui/에 자동 생성)
 npx shadcn@latest add <component-name>
 
-# shadcn 컴포넌트 초기화 (다시 설정)
+# 예시
+npx shadcn@latest add dialog
+npx shadcn@latest add dropdown-menu
+
+# shadcn 설정 초기화 (필요시)
 npx shadcn@latest init
 ```
+
+### Playwright 브라우저 테스트
+
+```bash
+# 개선된 E2E 테스트 실행 (Chrome 브라우저 자동화)
+node test-dashboard-improved.js
+
+# 테스트 결과 확인
+# - test-screenshots/ 디렉토리에 스크린샷 저장
+# - 콘솔에 9단계 테스트 결과 출력
+# - FINAL_REPORT.txt 또는 PLAYWRIGHT_TEST_REPORT.md 참고
+```
+
+### 패키지 및 의존성
+
+```bash
+# 새 패키지 설치
+npm install <package-name>
+
+# 개발 패키지 설치
+npm install --save-dev <package-name>
+
+# 의존성 업데이트
+npm update
+
+# 패키지 목록 확인
+npm list
+```
+
+## 대시보드 페이지 구조
+
+### 구현된 페이지
+
+1. **메인 대시보드** (`/dashboard`)
+   - 4개 통계 카드: 사용자, 매출, 활성 세션, 전환율
+   - 3개 탭: 개요, 분석, 보고서
+   - `useDebounceValue` 훅으로 검색 디바운싱 구현
+   - 로딩 상태 표시 (Skeleton 컴포넌트)
+
+2. **분석 페이지** (`/analytics`)
+   - 4개 메트릭 카드: DAU, 월간 수익, 전환율, 이탈율
+   - 3개 탭: 개요, 트래픽, 전환
+   - 월별 데이터 테이블
+   - 트래픽 소스 및 전환 단계 시각화 (아직 차트 미구현)
+
+3. **설정 페이지** (`/settings`)
+   - 3개 탭: 일반, 알림, 보안
+   - **일반 설정**: 사이트명, 관리자 이메일, 시간대
+   - **알림 설정**: Switch 토글 (이메일, 푸시, 주간 보고서)
+   - **보안 설정**: 비밀번호, 2단계 인증, 세션 관리 버튼
+
+### 라우팅 패턴
+모든 대시보드 페이지는 `(dashboard)` Route Group 내에 위치하므로:
+- 공통 레이아웃 (`app/(dashboard)/layout.tsx`): Sidebar + Header 적용
+- URL에 `(dashboard)` 포함 안 됨 (예: `/dashboard`, `/analytics`, `/settings`)
 
 ## Next.js 16 주의사항
 
@@ -223,6 +288,71 @@ components/
 lib/
   utils.ts              ← cn() 유틸리티 (shadcn init 생성)
 ```
+
+## 자동화 테스트 (Playwright)
+
+### E2E 테스트 스크립트
+- **파일**: `test-dashboard-improved.js`
+- **목적**: 대시보드 전체 UI 플로우 자동화 테스트
+- **브라우저**: Chrome (headless: false로 UI 확인 가능)
+
+### 테스트 단계 (9단계)
+1. 홈페이지 접속 (/)
+2. 대시보드 메인 접속 (/dashboard)
+3. 분석 페이지 접속 (/analytics)
+4. 분석 페이지 탭 상호작용
+5. 설정 페이지 접속 (/settings)
+6. 설정 페이지 탭 상호작용 (알림, 보안)
+7. 대시보드 내부 탭 상호작용
+8. 사이드바 네비게이션 링크 검증
+9. 반응형 디자인 테스트 (모바일 375px, 태블릿 768px)
+
+### 테스트 결과 생성물
+- 스크린샷: `test-screenshots/` (11개)
+- 보고서: `PLAYWRIGHT_TEST_REPORT.md`
+- 요약: `ERROR_ANALYSIS_SUMMARY.md`
+
+### 주요 발견사항
+- ✅ 모든 페이지 정상 로드 (200 응답)
+- ✅ 모든 탭 상호작용 정상 작동
+- ✅ 네비게이션 링크 정상 작동
+- ✅ 반응형 디자인 정상 작동
+
+## 환경 설정 파일
+
+### TypeScript (`tsconfig.json`)
+- **target**: ES2017
+- **module**: ESNext
+- **strict**: true (엄격한 타입 검사)
+- **경로 매핑**: `@/*` → 절대 경로
+
+### ESLint (`eslint.config.mjs`)
+- **설정**: Flat Config (새 형식)
+- **확장**: next/core-web-vitals + typescript
+- **무시**: .next, out, build 디렉토리
+
+### PostCSS (`postcss.config.mjs`)
+- **플러그인**: `@tailwindcss/postcss` (Tailwind CSS v4)
+
+### Tailwind CSS (`app/globals.css`)
+- **방식**: CSS-first (config 파일 없음)
+- **색상**: HSL 채널값 CSS 변수
+- **다크모드**: `.dark` 클래스 기반
+
+### MCP 설정 (`mcp.json`)
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--browser", "chrome"]
+    }
+  }
+}
+```
+- **목적**: Claude Code에서 Playwright를 통한 자동화 테스트
+- **브라우저**: Chrome 사용
 
 ## 언어 및 커뮤니케이션
 
