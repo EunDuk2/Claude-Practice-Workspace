@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Bash(npm run:*)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts|json\\)$\")",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(kill 23500)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(grep -E '\\\\.\\(md|json\\)$')"
+    ]
+  }
+}
