@@ -1,0 +1,6 @@
+{
+  "allowedTools": ["Edit", "Read", "Write", "Glob", "Grep", "Bash", "Agent"],
+  "customCommands": {
+    "tm": "npx task-master"
+  }
+}
